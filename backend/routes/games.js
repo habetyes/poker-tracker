@@ -4,21 +4,23 @@ const router = express.Router();
 const db = require('../db');
 const authenticateToken = require('../middleware/authMiddleware');
 
-// POST /api/games – Create a new game (host only)
+/*
+  POST /api/games – Create a new game (host only)
+*/
 router.post('/', authenticateToken, async (req, res) => {
   const { date, notes, players } = req.body;
   if (!date || !players || !Array.isArray(players)) {
     return res.status(400).json({ message: 'Invalid game data' });
   }
   try {
-    // Insert game record
+    // Insert the game record
     const gameResult = await db.query(
       'INSERT INTO games (game_date, notes) VALUES ($1, $2) RETURNING *',
       [date, notes || null]
     );
     const game = gameResult.rows[0];
     
-    // Insert player game results (each p should be of shape: { playerId, buyIns: [10,20], cashOut: 50 })
+    // Insert each player's game result
     for (const p of players) {
       await db.query(
         'INSERT INTO game_players (game_id, player_id, buy_ins, cash_out) VALUES ($1, $2, $3, $4)',
@@ -32,7 +34,9 @@ router.post('/', authenticateToken, async (req, res) => {
   }
 });
 
-// PUT /api/games/:id – Update an existing game (host only)
+/*
+  PUT /api/games/:id – Update an existing game (host only)
+*/
 router.put('/:id', authenticateToken, async (req, res) => {
   const gameId = req.params.id;
   const { date, notes, players } = req.body;
@@ -40,10 +44,13 @@ router.put('/:id', authenticateToken, async (req, res) => {
     return res.status(400).json({ message: 'Invalid game data' });
   }
   try {
+    // Update the game record
     await db.query('UPDATE games SET game_date = $1, notes = $2 WHERE id = $3', [date, notes || null, gameId]);
-    // Remove existing player records for this game
+    
+    // Remove all existing player records for this game
     await db.query('DELETE FROM game_players WHERE game_id = $1', [gameId]);
-    // Re-insert updated player game results
+    
+    // Insert updated player records
     for (const p of players) {
       await db.query(
         'INSERT INTO game_players (game_id, player_id, buy_ins, cash_out) VALUES ($1, $2, $3, $4)',
@@ -57,8 +64,10 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/games – Get all games (host only)
-router.get('/', authenticateToken, async (req, res) => {
+/*
+  GET /api/games – Publicly get the list of games.
+*/
+router.get('/', async (req, res) => {
   try {
     const result = await db.query('SELECT * FROM games ORDER BY game_date DESC, id DESC');
     res.json(result.rows);
@@ -68,8 +77,11 @@ router.get('/', authenticateToken, async (req, res) => {
   }
 });
 
-// GET /api/games/:id – Get a single game with its players (host only)
-router.get('/:id', authenticateToken, async (req, res) => {
+/*
+  GET /api/games/:id – Publicly get a single game along with its players.
+  This query joins the game_players table with players to include the player name.
+*/
+router.get('/:id', async (req, res) => {
   const gameId = req.params.id;
   try {
     const gameResult = await db.query('SELECT * FROM games WHERE id = $1', [gameId]);
@@ -77,8 +89,13 @@ router.get('/:id', authenticateToken, async (req, res) => {
       return res.status(404).json({ message: 'Game not found' });
     }
     const game = gameResult.rows[0];
-    // Get players for this game
-    const playersResult = await db.query('SELECT * FROM game_players WHERE game_id = $1', [gameId]);
+    // Retrieve associated players with a join to get the player's name
+    const playersResult = await db.query(`
+      SELECT gp.*, p.name as player_name
+      FROM game_players gp
+      JOIN players p ON gp.player_id = p.id
+      WHERE gp.game_id = $1
+    `, [gameId]);
     game.players = playersResult.rows;
     res.json(game);
   } catch (err) {
@@ -87,7 +104,9 @@ router.get('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE /api/games/:id – Delete a game (host only)
+/*
+  DELETE /api/games/:id – Delete a game (host only)
+*/
 router.delete('/:id', authenticateToken, async (req, res) => {
   const gameId = req.params.id;
   try {

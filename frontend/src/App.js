@@ -10,17 +10,19 @@ import GameDetail from './components/GameDetail';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  
+
+  // When the component mounts, check localStorage for a token.
   useEffect(() => {
     const token = localStorage.getItem('token');
     setIsAuthenticated(!!token);
   }, []);
-  
+
   return (
     <div className="container" style={{ padding: '20px' }}>
       <nav style={{ marginBottom: '20px' }}>
         <Link to="/">Dashboard</Link> |{' '}
         <Link to="/login">Host Login</Link> |{' '}
+        {/* Only show the following links if authenticated */}
         {isAuthenticated && (
           <>
             <Link to="/game-entry">Add/Edit Game</Link> |{' '}
