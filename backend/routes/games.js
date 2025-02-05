@@ -1,0 +1,102 @@
+// backend/routes/games.js
+const express = require('express');
+const router = express.Router();
+const db = require('../db');
+const authenticateToken = require('../middleware/authMiddleware');
+
+// POST /api/games – Create a new game (host only)
+router.post('/', authenticateToken, async (req, res) => {
+  const { date, notes, players } = req.body;
+  if (!date || !players || !Array.isArray(players)) {
+    return res.status(400).json({ message: 'Invalid game data' });
+  }
+  try {
+    // Insert game record
+    const gameResult = await db.query(
+      'INSERT INTO games (game_date, notes) VALUES ($1, $2) RETURNING *',
+      [date, notes || null]
+    );
+    const game = gameResult.rows[0];
+    
+    // Insert player game results (each p should be of shape: { playerId, buyIns: [10,20], cashOut: 50 })
+    for (const p of players) {
+      await db.query(
+        'INSERT INTO game_players (game_id, player_id, buy_ins, cash_out) VALUES ($1, $2, $3, $4)',
+        [game.id, p.playerId, p.buyIns, p.cashOut]
+      );
+    }
+    res.status(201).json({ gameId: game.id });
+  } catch (err) {
+    console.error('Error creating game', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// PUT /api/games/:id – Update an existing game (host only)
+router.put('/:id', authenticateToken, async (req, res) => {
+  const gameId = req.params.id;
+  const { date, notes, players } = req.body;
+  if (!date || !players || !Array.isArray(players)) {
+    return res.status(400).json({ message: 'Invalid game data' });
+  }
+  try {
+    await db.query('UPDATE games SET game_date = $1, notes = $2 WHERE id = $3', [date, notes || null, gameId]);
+    // Remove existing player records for this game
+    await db.query('DELETE FROM game_players WHERE game_id = $1', [gameId]);
+    // Re-insert updated player game results
+    for (const p of players) {
+      await db.query(
+        'INSERT INTO game_players (game_id, player_id, buy_ins, cash_out) VALUES ($1, $2, $3, $4)',
+        [gameId, p.playerId, p.buyIns, p.cashOut]
+      );
+    }
+    res.json({ message: 'Game updated successfully' });
+  } catch (err) {
+    console.error('Error updating game', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/games – Get all games (host only)
+router.get('/', authenticateToken, async (req, res) => {
+  try {
+    const result = await db.query('SELECT * FROM games ORDER BY game_date DESC, id DESC');
+    res.json(result.rows);
+  } catch (err) {
+    console.error('Error fetching games', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// GET /api/games/:id – Get a single game with its players (host only)
+router.get('/:id', authenticateToken, async (req, res) => {
+  const gameId = req.params.id;
+  try {
+    const gameResult = await db.query('SELECT * FROM games WHERE id = $1', [gameId]);
+    if (gameResult.rows.length === 0) {
+      return res.status(404).json({ message: 'Game not found' });
+    }
+    const game = gameResult.rows[0];
+    // Get players for this game
+    const playersResult = await db.query('SELECT * FROM game_players WHERE game_id = $1', [gameId]);
+    game.players = playersResult.rows;
+    res.json(game);
+  } catch (err) {
+    console.error('Error fetching game', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// DELETE /api/games/:id – Delete a game (host only)
+router.delete('/:id', authenticateToken, async (req, res) => {
+  const gameId = req.params.id;
+  try {
+    await db.query('DELETE FROM games WHERE id = $1', [gameId]);
+    res.json({ message: 'Game deleted successfully' });
+  } catch (err) {
+    console.error('Error deleting game', err);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+module.exports = router;
