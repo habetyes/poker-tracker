@@ -1,0 +1,109 @@
+/* App.css */
+
+/* Global Styles */
+body {
+  background-color: #f0f4f8; /* soft light blue-gray */
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar Styles */
+.navbar {
+  background-color: #2d3748; /* dark slate */
+}
+.navbar-brand {
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: #edf2f7 !important; /* off-white */
+}
+.nav-link {
+  color: #edf2f7 !important;
+  transition: color 0.2s;
+}
+.nav-link.active {
+  border-bottom: 2px solid #4299e1; /* blue accent */
+}
+.nav-link:hover {
+  color: #63b3ed !important; /* lighter blue on hover */
+}
+
+/* Container Spacing */
+.container {
+  margin-top: 1.5rem;
+}
+
+/* Headings */
+h2, h3 {
+  margin-bottom: 1rem;
+  color: #2d3748;
+}
+
+/* Card Styles */
+.card {
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  background-color: #fff;
+  margin-bottom: 1rem;
+}
+.card-header {
+  background-color: #fff;
+  font-size: 1.25rem;
+  font-weight: 600;
+  border-bottom: none;
+}
+.card-body {
+  background-color: #fff;
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: #4299e1;
+  border-color: #4299e1;
+  border-radius: 0.25rem;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.btn-primary:hover {
+  background-color: #3182ce;
+  border-color: #3182ce;
+}
+.btn-danger {
+  background-color: #e53e3e;
+  border-color: #e53e3e;
+  border-radius: 0.25rem;
+}
+.btn-danger:hover {
+  background-color: #c53030;
+  border-color: #c53030;
+}
+
+/* Table Styles */
+.table {
+  background-color: #fff;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+.table th,
+.table td {
+  padding: 0.75rem;
+  border: none;
+}
+.table thead {
+  background-color: #edf2f7;
+}
+.table thead th {
+  cursor: pointer;
+}
+.table tbody tr:hover {
+  background-color: #f7fafc;
+}
+
+/* Special styling for negative numbers */
+.text-negative {
+  color: red;
+}
+
+

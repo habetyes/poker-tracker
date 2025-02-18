@@ -65,11 +65,23 @@ router.put('/:id', authenticateToken, async (req, res) => {
 });
 
 /*
-  GET /api/games – Publicly get the list of games.
+  GET /api/games – Publicly get the list of games with total buyins computed.
 */
 router.get('/', async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM games ORDER BY game_date DESC, id DESC');
+    const result = await db.query(`
+      SELECT g.*, 
+        COALESCE((
+          SELECT SUM(buy_total)
+          FROM (
+            SELECT (SELECT COALESCE(SUM(buy), 0) FROM unnest(buy_ins) AS buy) AS buy_total
+            FROM game_players gp
+            WHERE gp.game_id = g.id
+          ) sub
+        ), 0) AS total_buyins
+      FROM games g
+      ORDER BY g.game_date DESC, g.id DESC
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching games', err);
@@ -79,7 +91,7 @@ router.get('/', async (req, res) => {
 
 /*
   GET /api/games/:id – Publicly get a single game along with its players.
-  This query joins the game_players table with players to include the player name.
+  (This endpoint remains unchanged from earlier.)
 */
 router.get('/:id', async (req, res) => {
   const gameId = req.params.id;

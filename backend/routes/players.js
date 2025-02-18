@@ -4,10 +4,17 @@ const router = express.Router();
 const db = require('../db');
 const authenticateToken = require('../middleware/authMiddleware');
 
-// GET /api/players (public)
+// GET /api/players (public) - returns players with computed can_delete flag
 router.get('/', async (req, res) => {
   try {
-    const result = await db.query('SELECT * FROM players ORDER BY name ASC');
+    const result = await db.query(`
+      SELECT p.*, 
+        CASE WHEN EXISTS (
+          SELECT 1 FROM game_players gp WHERE gp.player_id = p.id
+        ) THEN false ELSE true END AS can_delete
+      FROM players p
+      ORDER BY p.name ASC
+    `);
     res.json(result.rows);
   } catch (err) {
     console.error('Error fetching players', err);
@@ -42,10 +49,14 @@ router.put('/:id', authenticateToken, async (req, res) => {
   }
 });
 
-// DELETE /api/players/:id (host only)
+// DELETE /api/players/:id (host only) - checks for historical data
 router.delete('/:id', authenticateToken, async (req, res) => {
   const playerId = req.params.id;
   try {
+    const historyResult = await db.query('SELECT 1 FROM game_players WHERE player_id = $1', [playerId]);
+    if (historyResult.rows.length > 0) {
+      return res.status(403).json({ message: 'Cannot delete player with historical data.' });
+    }
     await db.query('DELETE FROM players WHERE id = $1', [playerId]);
     res.json({ message: 'Player deleted successfully' });
   } catch (err) {

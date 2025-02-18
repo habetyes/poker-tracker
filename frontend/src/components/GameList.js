@@ -39,31 +39,40 @@ const GameList = () => {
 
   return (
     <div>
-      <h2>Game List</h2>
+      <h2 className="mb-4">Game Management</h2>
       {games.length === 0 ? (
         <p>No games found.</p>
       ) : (
-        <table border="1" cellPadding="8" style={{ borderCollapse: 'collapse' }}>
-          <thead>
+        <table className="table table-bordered table-hover">
+          <thead className="table-light">
             <tr>
-              <th>ID</th>
-              <th>Date (click to view details)</th>
+              <th>Date</th>
               <th>Notes</th>
+              <th>Total Buyins</th>
               {isAuthenticated && <th>Actions</th>}
             </tr>
           </thead>
           <tbody>
             {games.map(game => (
               <tr key={game.id}>
-                <td>{game.id}</td>
                 <td>
-                  <a href={`/game-detail/${game.id}`}>{game.game_date}</a>
+                  <a href={`/game-detail/${game.id}`}>
+                    {game.game_date.slice(0, 10)}
+                  </a>
                 </td>
                 <td>{game.notes}</td>
+                <td>{game.total_buyins}</td>
                 {isAuthenticated && (
                   <td>
-                    <button onClick={() => handleEdit(game.id)}>Edit</button>{' '}
-                    <button onClick={() => handleDelete(game.id)}>Delete</button>
+                    <button className="btn btn-sm btn-primary me-2" 
+                    style={{ backgroundColor: 'transparent', border: 'none'}}
+                    onClick={() => handleEdit(game.id)}>✍️</button>
+                    <button 
+                      className="btn btn-sm" 
+                      style={{ backgroundColor: 'transparent', border: 'none' }}
+                      onClick={() => handleDelete(game.id)}>
+                      <span role="img" aria-label="delete">🗑️</span>
+                    </button>
                   </td>
                 )}
               </tr>
