@@ -236,7 +236,7 @@ const GameEntry = () => {
                     <div
                       className="card h-100"
                       style={{
-                        borderRadius: '20px',
+                        borderRadius: '50px',
                         boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                         overflow: 'hidden'
                       }}
@@ -310,7 +310,7 @@ const GameEntry = () => {
                         className="card h-100"
                         onClick={() => togglePlayerToAdd(player.id)}
                         style={{
-                          borderRadius: '20px',
+                          borderRadius: '50px',
                           boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                           cursor: 'pointer',
                           transition: 'background-color 0.3s',

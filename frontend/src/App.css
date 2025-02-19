@@ -56,6 +56,7 @@ h2, h3 {
 }
 .card-body {
   background-color: #fff;
+  border-radius: 0.5rem;
 }
 
 /* Button Styles */
@@ -108,7 +109,7 @@ h2, h3 {
 
 /* Custom card styling for player selection on the Create New Game page */
 .custom-card {
-  border-radius: 20px !important;
+  border-radius: 50px !important;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
   transition: background-color 0.3s ease, border 0.3s ease;
   cursor: pointer;
@@ -117,12 +118,13 @@ h2, h3 {
 }
 
 .selected-card {
-  border: 3px solid #10b981 !important;
+  border: 6px solid #10b981 !important;
+  background-color: #6ced8f !important; /* light green */
 }
 
 .checkmark {
   position: absolute;
-  top: 8px;
+  top: -5px;
   right: 8px;
   font-size: 1.5rem;
   color: #10b981;
