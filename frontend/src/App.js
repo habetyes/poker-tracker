@@ -30,7 +30,7 @@ function App() {
         <div className="container-fluid">
           <NavLink className="navbar-brand" to="/">Poker Tracker</NavLink>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
@@ -38,9 +38,6 @@ function App() {
             <ul className="navbar-nav me-auto">
               <li className="nav-item">
                 <NavLink className="nav-link" to="/">Dashboard</NavLink>
-              </li>
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/login">Login</NavLink>
               </li>
               {isAuthenticated && (
                 <>
@@ -59,15 +56,16 @@ function App() {
             {/* Right-side authentication control */}
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                {isAuthenticated && (
+                {isAuthenticated ? (
                   <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
+                ) : (
+                  <NavLink className="nav-link" to="/login">Login</NavLink>
                 )}
               </li>
             </ul>
           </div>
         </div>
       </nav>
-      {/* Use container-fluid for full responsiveness */}
       <div className="container-fluid">
         <Routes>
           <Route path="/" element={<Dashboard />} />

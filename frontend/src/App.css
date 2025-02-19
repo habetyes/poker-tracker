@@ -106,4 +106,25 @@ h2, h3 {
   color: red;
 }
 
+/* Custom card styling for player selection on the Create New Game page */
+.custom-card {
+  border-radius: 20px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
+  transition: background-color 0.3s ease, border 0.3s ease;
+  cursor: pointer;
+  background-color: #fff;
+  position: relative;
+}
+
+.selected-card {
+  border: 3px solid #10b981 !important;
+}
+
+.checkmark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 1.5rem;
+  color: #10b981;
+}
 
