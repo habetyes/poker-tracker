@@ -18,27 +18,29 @@ function App() {
     setIsAuthenticated(!!token);
   }, []);
 
-  // Logout function: removes token and updates state
   const handleLogout = () => {
     localStorage.removeItem('token');
     setIsAuthenticated(false);
-    navigate('/'); // Redirect to home after logout
+    navigate('/');
   };
 
   return (
     <div>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div className="container">
+        <div className="container-fluid">
           <NavLink className="navbar-brand" to="/">Poker Tracker</NavLink>
           <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
           <div className="collapse navbar-collapse" id="navbarNav">
-            {/* Left-aligned navigation items */}
+            {/* Left-side navigation */}
             <ul className="navbar-nav me-auto">
               <li className="nav-item">
                 <NavLink className="nav-link" to="/">Dashboard</NavLink>
+              </li>
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/login">Login</NavLink>
               </li>
               {isAuthenticated && (
                 <>
@@ -54,20 +56,19 @@ function App() {
                 <NavLink className="nav-link" to="/game-list">Game Management</NavLink>
               </li>
             </ul>
-            {/* Right-aligned authentication button */}
+            {/* Right-side authentication control */}
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                {isAuthenticated ? (
+                {isAuthenticated && (
                   <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
-                ) : (
-                  <NavLink className="nav-link" to="/login">Login</NavLink>
                 )}
               </li>
             </ul>
           </div>
         </div>
       </nav>
-      <div className="container">
+      {/* Use container-fluid for full responsiveness */}
+      <div className="container-fluid">
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login onLogin={() => setIsAuthenticated(true)} />} />
