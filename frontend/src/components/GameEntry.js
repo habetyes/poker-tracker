@@ -324,14 +324,12 @@ const GameEntry = () => {
                 .map(player => (
                   <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={player.id}>
                     <div
-                      className="card h-100"
+                      className={`custom-card h-100 ${playersToAdd.includes(player.id.toString()) ? 'selected-card' : ''}`}
                       onClick={() => togglePlayerToAdd(player.id)}
                       style={{
-                        borderRadius: '50px',
                         boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
                         cursor: 'pointer',
-                        transition: 'background-color 0.3s',
-                        backgroundColor: playersToAdd.includes(player.id.toString()) ? '#10b981' : '#fff'
+                        transition: 'background-color 0.3s'
                       }}
                     >
                       <div className="card-body d-flex flex-column justify-content-center align-items-center">
