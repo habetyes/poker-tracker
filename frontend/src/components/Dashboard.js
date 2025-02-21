@@ -72,7 +72,10 @@ const Dashboard = () => {
               <td>{player.name}</td>
               <td>{player.totalBuyIns}</td>
               <td>{player.totalCashOut}</td>
-              <td className={player.netProfit < 0 ? 'text-negative' : ''}>{player.netProfit}</td>
+              <td className={
+                player.netProfit < 0 ? 'text-negative' : 
+                player.netProfit > 0 ? 'text-positive' : ''
+              }>{player.netProfit}</td>
               <td>{player.biggestWin}</td>
             </tr>
           ))}

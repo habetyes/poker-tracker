@@ -107,6 +107,11 @@ h2, h3 {
   color: red;
 }
 
+/* Special styling for positive numbers */
+.text-positive {
+  color: green;
+}
+
 /* Custom card styling for player selection on the Create New Game page */
 .custom-card {
   border-radius: 50px !important;
@@ -128,5 +133,15 @@ h2, h3 {
   right: 8px;
   font-size: 1.5rem;
   color: #10b981;
+}
+
+td.text-negative {
+  color: rgb(0, 0, 0);
+  background-color: red;
+}
+
+td.text-positive {
+  color: rgb(0, 0, 0);
+  background-color: rgb(23, 216, 23);
 }
 
