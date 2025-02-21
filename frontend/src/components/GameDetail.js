@@ -37,8 +37,8 @@ const GameDetail = () => {
       <p><strong>Notes:</strong> {game.notes}</p>
       <h3>Players:</h3>
       {game.players && game.players.length > 0 ? (
-        <table border="1" cellPadding="8" style={{ borderCollapse: 'collapse' }}>
-          <thead>
+        <table className="table table-bordered table-hover">
+          <thead className="table-light">
             <tr>
               <th>Player Name</th>
               <th>Buy-Ins</th>
@@ -58,7 +58,7 @@ const GameDetail = () => {
                   <td>{p.player_name}</td>
                   <td>{Array.isArray(p.buy_ins) ? p.buy_ins.join(', ') : p.buy_ins}</td>
                   <td>{p.cash_out}</td>
-                  <td>{net}</td>
+                  <td classname={net < 0 ? 'text-negative' : net > 0 ? 'text-positive' : ''}>{net}</td>
                 </tr>
               );
             })}
