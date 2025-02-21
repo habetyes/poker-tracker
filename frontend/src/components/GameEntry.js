@@ -212,7 +212,7 @@ const GameEntry = () => {
         <form onSubmit={handleSaveGame}>
           <div className="mb-3">
             <label className="form-label">Date:</label>
-            <p className="form-control-plaintext">{date}</p>
+            <p className="form-control-plaintext">{date ? date.slice(0, 10) : ''}</p>
           </div>
           <div className="mb-3">
             <label className="form-label">Game Name/Notes (optional):</label>
@@ -224,13 +224,27 @@ const GameEntry = () => {
               placeholder="Custom game name"
             />
           </div>
+          <div className="d-flex justify-content-end mb-3">
+            <button
+              type="button"
+              className="btn btn-secondary me-2"
+              onClick={() => setAddingPlayers(!addingPlayers)}
+            >
+              {addingPlayers ? 'Cancel Adding Players' : 'Add Players'}
+            </button>
+            <button type="submit" className="btn btn-primary">
+              Save Game
+            </button>
+          </div>
           <h3>Players in This Game</h3>
           <div className="row g-2">
             {selectedPlayers.length === 0 ? (
               <p>No players added yet.</p>
             ) : (
               selectedPlayers.map((p, index) => {
-                const playerInfo = allPlayers.find(pl => pl.id.toString() === p.playerId);
+                const playerInfo = allPlayers.find(
+                  pl => pl.id.toString() === p.playerId
+                );
                 return (
                   <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={p.playerId}>
                     <div
@@ -241,37 +255,48 @@ const GameEntry = () => {
                         overflow: 'hidden'
                       }}
                     >
-                      <div className="card-body d-flex flex-column">
-                        <h5 className="card-title text-center mt-2">{playerInfo ? playerInfo.name : 'Unknown Player'}</h5>
-                        <div className="mb-2">
-                          <label className="form-label">Buy-Ins (comma-separated):</label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            value={p.buyIns}
-                            onChange={e => {
-                              const newPlayers = [...selectedPlayers];
-                              newPlayers[index].buyIns = e.target.value;
-                              setSelectedPlayers(newPlayers);
-                            }}
-                            placeholder="e.g. 10,20"
-                          />
-                        </div>
-                        <div className="mb-2">
-                          <label className="form-label">Cash-Out:</label>
-                          <input
-                            type="number"
-                            className="form-control"
-                            value={p.cashOut}
-                            onChange={e => {
-                              const newPlayers = [...selectedPlayers];
-                              newPlayers[index].cashOut = e.target.value;
-                              setSelectedPlayers(newPlayers);
-                            }}
-                            placeholder="e.g. 50"
-                          />
+                      <div
+                        className="card-body d-flex flex-column justify-content-between"
+                        style={{ height: '100%' }}
+                      >
+                        <div>
+                          <h5 className="card-title text-center mt-2">
+                            {playerInfo ? playerInfo.name : 'Unknown Player'}
+                          </h5>
                         </div>
                         <div className="d-flex justify-content-between">
+                          <div style={{ width: '48%' }}>
+                            <label className="form-label d-block text-center">Buy-In:</label>
+                            <input
+                              type="number"
+                              step="1"
+                              min="0"
+                              className="form-control"
+                              value={p.buyIns}
+                              onChange={e => {
+                                const newPlayers = [...selectedPlayers];
+                                newPlayers[index].buyIns = e.target.value;
+                                setSelectedPlayers(newPlayers);
+                              }}
+                              placeholder="e.g. 10"
+                            />
+                          </div>
+                          <div style={{ width: '48%' }}>
+                            <label className="form-label d-block text-center">Cash-Out:</label>
+                            <input
+                              type="number"
+                              className="form-control"
+                              value={p.cashOut}
+                              onChange={e => {
+                                const newPlayers = [...selectedPlayers];
+                                newPlayers[index].cashOut = e.target.value;
+                                setSelectedPlayers(newPlayers);
+                              }}
+                              placeholder="e.g. 50"
+                            />
+                          </div>
+                        </div>
+                        <div className="d-flex justify-content-between mt-2">
                           <button type="button" className="btn btn-link btn-sm" onClick={() => {}}>
                             Edit
                           </button>
@@ -292,49 +317,36 @@ const GameEntry = () => {
               })
             )}
           </div>
-          <div className="mt-4">
-            <button
-              type="button"
-              className="btn btn-secondary me-2"
-              onClick={() => setAddingPlayers(!addingPlayers)}
-            >
-              {addingPlayers ? 'Cancel Adding Players' : 'Add Players'}
-            </button>
-            {addingPlayers && (
-              <div className="row g-2 mt-2">
-                {allPlayers
-                  .filter(player => !selectedPlayers.find(p => p.playerId === player.id.toString()))
-                  .map(player => (
-                    <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={player.id}>
-                      <div
-                        className="card h-100"
-                        onClick={() => togglePlayerToAdd(player.id)}
-                        style={{
-                          borderRadius: '50px',
-                          boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
-                          cursor: 'pointer',
-                          transition: 'background-color 0.3s',
-                          backgroundColor: playersToAdd.includes(player.id.toString()) ? '#10b981' : '#fff'
-                        }}
-                      >
-                        <div className="card-body d-flex flex-column justify-content-center align-items-center">
-                          <h5 className="card-title text-center">{player.name}</h5>
-                        </div>
+          {addingPlayers && (
+            <div className="row g-2 mt-2">
+              {allPlayers
+                .filter(player => !selectedPlayers.find(p => p.playerId === player.id.toString()))
+                .map(player => (
+                  <div className="col-12 col-sm-6 col-md-4 col-lg-3" key={player.id}>
+                    <div
+                      className="card h-100"
+                      onClick={() => togglePlayerToAdd(player.id)}
+                      style={{
+                        borderRadius: '50px',
+                        boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
+                        cursor: 'pointer',
+                        transition: 'background-color 0.3s',
+                        backgroundColor: playersToAdd.includes(player.id.toString()) ? '#10b981' : '#fff'
+                      }}
+                    >
+                      <div className="card-body d-flex flex-column justify-content-center align-items-center">
+                        <h5 className="card-title text-center">{player.name}</h5>
                       </div>
                     </div>
-                  ))
-                }
-                <div className="col-12">
-                  <button type="button" className="btn btn-primary mt-2" onClick={handleAddNewPlayers}>
-                    Add Selected Players
-                  </button>
-                </div>
+                  </div>
+                ))}
+              <div className="col-12">
+                <button type="button" className="btn btn-primary mt-2" onClick={handleAddNewPlayers}>
+                  Add Selected Players
+                </button>
               </div>
-            )}
-          </div>
-          <div className="mt-3">
-            <button type="submit" className="btn btn-primary">Save Game</button>
-          </div>
+            </div>
+          )}
         </form>
       </div>
     );
