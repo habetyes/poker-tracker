@@ -6,7 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 const GameEntry = () => {
   const { id } = useParams(); // if id exists, we are in edit mode; otherwise, create mode.
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   // Shared state for both modes
   const [date, setDate] = useState('');

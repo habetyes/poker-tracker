@@ -14,12 +14,12 @@ function App() {
 
   // Check for token on mount
   useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     setIsAuthenticated(!!token);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    sessionStorage.removeItem('token');
     setIsAuthenticated(false);
     navigate('/');
   };

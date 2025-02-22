@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const GameList = () => {
   const [games, setGames] = useState([]);
   const navigate = useNavigate();
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
   const isAuthenticated = !!token;
 
   const fetchGames = () => {

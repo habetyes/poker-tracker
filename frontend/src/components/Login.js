@@ -14,7 +14,7 @@ const Login = ({ onLogin }) => {
     axios.post('/api/auth/login', { username, password })
       .then(response => {
         const token = response.data.token;
-        localStorage.setItem('token', token);
+        sessionStorage.setItem('token', token);
         onLogin(); // Notify App that login succeeded
         navigate('/game-entry');
       })

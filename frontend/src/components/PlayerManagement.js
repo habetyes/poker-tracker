@@ -7,7 +7,7 @@ const PlayerManagement = () => {
   const [newPlayerName, setNewPlayerName] = useState('');
   const [editingPlayerId, setEditingPlayerId] = useState(null);
   const [editedName, setEditedName] = useState('');
-  const token = localStorage.getItem('token');
+  const token = sessionStorage.getItem('token');
 
   const fetchPlayers = () => {
     axios.get('/api/players')
